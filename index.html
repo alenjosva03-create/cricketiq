@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CricketIQ — Cricket Performance Lab</title>
+<style>
+:root{--bg:#0b1020;--panel:#131b30;--panel2:#18233c;--text:#f3f6ff;--muted:#9ba8c7;--line:#263451;--lime:#c7f36b;--cyan:#66e0d1;--orange:#ffb86b;--red:#ff7c8b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 500px at 80% -10%,#20335c 0%,transparent 60%),var(--bg);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:var(--lime);color:#101728;font-weight:800}button.secondary{background:#263451;color:var(--text);border:1px solid #334463}button:focus,input:focus,select:focus{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1200px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:14px;background:var(--lime);color:#111827;display:grid;place-items:center;font-size:24px;font-weight:900}.eyebrow{color:var(--lime);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800}.brand h1{margin:3px 0 0;font-size:23px}.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.pill{font-size:11px;border:1px solid #455577;color:#c8d5f3;border-radius:99px;padding:7px 10px}.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:18px}.hero-main,.hero-side,.panel,.stat{background:linear-gradient(145deg,rgba(24,35,60,.96),rgba(17,25,44,.96));border:1px solid var(--line);border-radius:18px}.hero-main{padding:26px;position:relative;overflow:hidden}.hero-main:after{content:"🏏";position:absolute;right:22px;bottom:-16px;font-size:120px;opacity:.13;transform:rotate(-18deg)}.hero h2{font-size:clamp(27px,4vw,42px);line-height:1.06;margin:12px 0}.hero p{color:var(--muted);max-width:540px;line-height:1.6}.hero-side{padding:22px;display:flex;flex-direction:column;justify-content:space-between;gap:15px}.hero-side h3{margin:0 0 6px}.hero-side p{font-size:13px;margin:0}.tag{display:inline-block;color:var(--cyan);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{padding:18px}.stat .label{font-size:12px;color:var(--muted)}.stat .value{font-size:27px;font-weight:850;margin:9px 0 5px}.stat .sub{font-size:11px;color:var(--cyan)}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-bottom:18px}.panel{padding:21px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}.panel h3{margin:0;font-size:17px}.panel .desc{color:var(--muted);font-size:12px;margin-top:6px}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.controls select,.controls input{background:#0e1629;border:1px solid #354462;color:var(--text);padding:10px;border-radius:9px;min-width:0}.controls select{flex:1}.compare-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.player-card{padding:16px;background:#0e1629;border:1px solid #2d3b59;border-radius:14px}.player-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.avatar{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#2b3b5c;font-weight:900}.player-name{font-weight:800;margin-top:11px}.player-team{font-size:11px;color:var(--muted);margin-top:4px}.big-number{font-size:24px;font-weight:900;margin-top:14px}.small-label{font-size:11px;color:var(--muted)}.mini-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.mini-metrics div{border-top:1px solid #293653;padding-top:9px}.mini-metrics strong{display:block;font-size:14px;margin-top:4px}.chart{width:100%;height:190px;display:block}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:8px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.insight{background:linear-gradient(120deg,#1b2c46,#17243b);border:1px solid #35496b;border-radius:14px;padding:16px;line-height:1.6;font-size:13px;color:#dce6ff}.insight strong{color:var(--lime)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:560px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #263451;font-size:12px}th{color:var(--muted);font-weight:700}td strong{font-size:13px}.role{border-radius:7px;background:#263451;padding:5px 7px;font-size:10px}.footer{color:#7887a8;font-size:11px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 2px 25px}.notice{color:var(--orange);font-size:11px;line-height:1.5;margin-top:12px}.empty{color:var(--muted);font-size:13px;padding:20px;text-align:center}.hidden{display:none!important}
+@media(max-width:800px){.hero,.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.wrap{padding:15px}.hero-main{padding:22px}.hero-main:after{font-size:90px}.panel{padding:16px}}
+@media(max-width:440px){.stats{gap:8px}.stat{padding:13px}.stat .value{font-size:23px}.compare-cards{grid-template-columns:1fr}.top-actions{width:100%}.top-actions button{flex:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><div class="logo">C</div><div><div class="eyebrow">Cricket intelligence</div><h1>CricketIQ <span style="color:var(--muted);font-weight:400">/ Performance Lab</span></h1></div></div>
+  <div class="top-actions"><span class="pill">DEMO DATA · NOT LIVE</span><button class="secondary" id="themeBtn">Switch accent</button><button id="exportBtn">Export CSV ↓</button></div>
+</header>
+<section class="hero">
+  <div class="hero-main"><span class="tag">Match the numbers to the story</span><h2>Every innings<br><span style="color:var(--lime)">has a pattern.</span></h2><p>Explore player form, compare batting output, and turn cricket statistics into clear, explainable insights.</p><button onclick="document.getElementById('compare').scrollIntoView({behavior:'smooth'})">Compare players ↗</button></div>
+  <div class="hero-side"><div><span class="tag">Analyst's note</span><h3>Numbers need context.</h3><p>Strike rate describes scoring speed; average describes runs per dismissal. Neither metric alone tells the full story.</p></div><div class="insight"><strong>How to use this demo</strong><br>Choose players below, filter the table, and export the sample dataset. All records are illustrative and must not be treated as official player statistics.</div></div>
+</section>
+<section class="stats">
+  <div class="stat"><div class="label">Sample players</div><div class="value" id="totalPlayers">8</div><div class="sub">Illustrative dataset</div></div>
+  <div class="stat"><div class="label">Sample innings</div><div class="value" id="totalInnings">126</div><div class="sub">Demo records only</div></div>
+  <div class="stat"><div class="label">Highest sample runs</div><div class="value" id="highestRuns">842</div><div class="sub">Across demo records</div></div>
+  <div class="stat"><div class="label">Formats included</div><div class="value">3</div><div class="sub">Test · ODI · T20I</div></div>
+</section>
+<section class="grid">
+  <article class="panel" id="compare">
+    <div class="panel-head"><div><h3>Player comparison</h3><div class="desc">Compare two sample profiles side by side</div></div><span class="tag">01 / Compare</span></div>
+    <div class="controls"><select id="playerA" aria-label="First player"></select><select id="playerB" aria-label="Second player"></select></div>
+    <div class="compare-cards" id="compareCards"></div>
+    <div class="notice">Sample values are fictional demonstration data, not verified real-world career statistics.</div>
+  </article>
+  <article class="panel">
+    <div class="panel-head"><div><h3>Batting profile</h3><div class="desc">Runs and strike rate across the demo squad</div></div><span class="tag">02 / Trends</span></div>
+    <svg class="chart" id="runsChart" viewBox="0 0 500 205" role="img" aria-label="Bar chart of sample runs"></svg>
+    <div class="legend"><span><i class="dot" style="background:var(--lime)"></i>Sample runs</span><span><i class="dot" style="background:var(--cyan)"></i>Sample strike rate shown in table</span></div>
+  </article>
+</section>
+<section class="grid">
+  <article class="panel">
+    <div class="panel-head"><div><h3>Bowling snapshot</h3><div class="desc">Sample wickets and economy rates</div></div><span class="tag">03 / Bowling</span></div>
+    <svg class="chart" id="bowlChart" viewBox="0 0 500 205" role="img" aria-label="Bar chart of sample wickets"></svg>
+    <div class="desc">Lower economy can indicate tighter scoring control; interpret it alongside format, overs, and role.</div>
+  </article>
+  <article class="panel">
+    <div class="panel-head"><div><h3>Insight generator</h3><div class="desc">Rule-based explanations from the selected demo players</div></div><span class="tag">04 / Explain</span></div>
+    <div class="controls"><select id="insightPlayer" aria-label="Player for insights"></select><button id="insightBtn">Generate insight</button></div>
+    <div class="insight" id="insightBox" aria-live="polite">Select a player and generate an insight. This demo uses transparent statistical rules, not a connected generative AI model.</div>
+    <div class="notice">No API key required. AI-generated narrative is not enabled in this offline prototype.</div>
+  </article>
+</section>
+<section class="panel">
+  <div class="panel-head"><div><h3>Player data explorer</h3><div class="desc">Search and filter the illustrative dataset</div></div><span class="tag">05 / Explore</span></div>
+  <div class="controls"><input id="search" placeholder="Search player or team…" aria-label="Search player or team"/><select id="formatFilter" aria-label="Filter by format"><option value="All">All formats</option><option>Test</option><option>ODI</option><option>T20I</option></select><select id="roleFilter" aria-label="Filter by role"><option value="All">All roles</option><option>Batter</option><option>All-rounder</option><option>Bowler</option></select></div>
+  <div class="table-wrap"><table><thead><tr><th>Player</th><th>Team</th><th>Role</th><th>Format</th><th>Runs</th><th>Average</th><th>Strike rate</th><th>Wickets</th><th>Economy</th></tr></thead><tbody id="playerRows"></tbody></table></div>
+  <div id="empty" class="empty hidden">No players match those filters. Try a different search.</div>
+</section>
+<footer class="footer"><span>CricketIQ · Independent portfolio prototype</span><span>Demo dataset · No official affiliation · Built for learning</span></footer>
+</div>
+<script>
+const players=[
+{id:1,name:"Aarav Sharma",team:"India",role:"Batter",format:"ODI",runs:842,average:52.6,sr:94.2,wickets:0,economy:0},
+{id:2,name:"Dev Patel",team:"India",role:"All-rounder",format:"T20I",runs:516,average:32.2,sr:142.5,wickets:18,economy:7.4},
+{id:3,name:"Kabir Singh",team:"Australia",role:"Batter",format:"Test",runs:721,average:45.1,sr:58.3,wickets:0,economy:0},
+{id:4,name:"Noah Williams",team:"Australia",role:"Bowler",format:"ODI",runs:86,average:12.3,sr:71.7,wickets:24,economy:4.8},
+{id:5,name:"Ishan Kumar",team:"England",role:"All-rounder",format:"ODI",runs:604,average:37.7,sr:101.4,wickets:15,economy:5.3},
+{id:6,name:"Rohan Das",team:"England",role:"Bowler",format:"T20I",runs:42,average:8.4,sr:87.5,wickets:21,economy:7.1},
+{id:7,name:"Ethan Brooks",team:"South Africa",role:"Batter",format:"T20I",runs:673,average:39.6,sr:151.2,wickets:0,economy:0},
+{id:8,name:"Arjun Nair",team:"South Africa",role:"Bowler",format:"Test",runs:103,average:17.1,sr:43.8,wickets:27,economy:2.9}
+];
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n).toLocaleString("en-IN");
+function fillSelect(id,selected){$(id).innerHTML=players.map(p=>`<option value="${p.id}" ${p.id===selected?"selected":""}>${p.name}</option>`).join("")}
+fillSelect("playerA",1);fillSelect("playerB",2);fillSelect("insightPlayer",1);
+function playerCard(p){return `<div class="player-card"><div class="player-top"><div class="avatar">${p.name.split(" ").map(x=>x[0]).join("")}</div><span class="role">${p.role}</span></div><div class="player-name">${p.name}</div><div class="player-team">${p.team} · ${p.format}</div><div class="big-number">${fmt(p.runs)} <span class="small-label">runs</span></div><div class="mini-metrics"><div><span class="small-label">Average</span><strong>${p.average.toFixed(1)}</strong></div><div><span class="small-label">Strike rate</span><strong>${p.sr.toFixed(1)}</strong></div><div><span class="small-label">Wickets</span><strong>${p.wickets}</strong></div><div><span class="small-label">Economy</span><strong>${p.economy?p.economy.toFixed(1):"N/A"}</strong></div></div></div>`}
+function updateCompare(){let a=players.find(p=>p.id==$("playerA").value),b=players.find(p=>p.id==$("playerB").value);$("compareCards").innerHTML=playerCard(a)+playerCard(b)}
+function drawChart(id,key,color){const svg=$(id),max=Math.max(...players.map(p=>p[key]),1),W=500,H=205,left=34,bottom=28,plotH=145,barW=34,gap=23;let s=`<line x1="${left}" y1="${H-bottom}" x2="490" y2="${H-bottom}" stroke="#435273"/>`;[0,.25,.5,.75,1].forEach(t=>{let y=H-bottom-plotH*t;s+=`<line x1="${left}" y1="${y}" x2="490" y2="${y}" stroke="#263451" stroke-dasharray="3 4"/><text x="25" y="${y+4}" fill="#9ba8c7" font-size="10" text-anchor="end">${Math.round(max*t)}</text>`});players.forEach((p,i)=>{let x=left+10+i*(barW+gap),h=p[key]/max*plotH,y=H-bottom-h,label=p.name.split(" ")[0];s+=`<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="5" fill="${color}" opacity=".9"><title>${p.name}: ${p[key]}</title></rect><text x="${x+barW/2}" y="${H-10}" fill="#aab7d4" font-size="9" text-anchor="middle">${label}</text>`});svg.innerHTML=s}
+function renderTable(){const q=$("search").value.toLowerCase(),f=$("formatFilter").value,r=$("roleFilter").value;const rows=players.filter(p=>(p.name+" "+p.team).toLowerCase().includes(q)&&(f==="All"||p.format===f)&&(r==="All"||p.role===r));$("playerRows").innerHTML=rows.map(p=>`<tr><td><strong>${p.name}</strong></td><td>${p.team}</td><td><span class="role">${p.role}</span></td><td>${p.format}</td><td>${fmt(p.runs)}</td><td>${p.average.toFixed(1)}</td><td>${p.sr.toFixed(1)}</td><td>${p.wickets}</td><td>${p.economy?p.economy.toFixed(1):"N/A"}</td></tr>`).join("");$("empty").classList.toggle("hidden",rows.length>0)}
+function generateInsight(){const p=players.find(x=>x.id==$("insightPlayer").value);let msg;if(p.role==="Bowler"){msg=`<strong>${p.name}</strong> is labelled a bowler in this sample. The dataset records ${p.wickets} wickets at an economy of ${p.economy.toFixed(1)}. Compare these values within the same format and check overs bowled before drawing conclusions.`}else{msg=`<strong>${p.name}</strong> has ${fmt(p.runs)} sample runs, an average of ${p.average.toFixed(1)}, and a strike rate of ${p.sr.toFixed(1)}. ${p.sr>=120?"The sample strike rate suggests a faster scoring profile.":"The sample strike rate suggests a more measured scoring profile."} Interpret the figures alongside format and match situation.`} $("insightBox").innerHTML=msg}
+["playerA","playerB"].forEach(id=>$(id).addEventListener("change",updateCompare));
+["search","formatFilter","roleFilter"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",renderTable));
+$("insightBtn").addEventListener("click",generateInsight);
+$("exportBtn").addEventListener("click",()=>{const header=["name","team","role","format","runs","average","strike_rate","wickets","economy"];const csv=[header.join(","),...players.map(p=>header.map(k=>JSON.stringify(k==="strike_rate"?p.sr:p[k]??"")).join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="cricketiq-demo-data.csv";a.click();URL.revokeObjectURL(a.href)});
+let accent=0;$("themeBtn").addEventListener("click",()=>{accent++;document.documentElement.style.setProperty("--lime",accent%2?"#ffb86b":"#c7f36b");document.documentElement.style.setProperty("--cyan",accent%2?"#9b9cff":"#66e0d1")});
+$("totalPlayers").textContent=players.length;$("totalInnings").textContent="126";$("highestRuns").textContent=fmt(Math.max(...players.map(p=>p.runs)));
+updateCompare();drawChart("runsChart","runs","var(--lime)");drawChart("bowlChart","wickets","var(--cyan)");renderTable();generateInsight();
+</script>
+</body>
+</html>
