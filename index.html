@@ -29,6 +29,32 @@ button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10
   <div class="stat"><div class="label">Highest sample runs</div><div class="value" id="highestRuns">842</div><div class="sub">Across demo records</div></div>
   <div class="stat"><div class="label">Formats included</div><div class="value">3</div><div class="sub">Test · ODI · T20I</div></div>
 </section>
+
+<section class="panel" id="recentTracker" style="margin-bottom:18px">
+  <div class="panel-head">
+    <div><h3>Recent-match performance tracker</h3><div class="desc">Enter your own runs from up to five recent matches</div></div>
+    <span class="tag">06 / Your form</span>
+  </div>
+  <div class="notice" style="margin:0 0 14px">User-provided data only · These entries are not connected to official scorecards.</div>
+  <div class="controls" id="recentInputs">
+    <input type="number" min="0" max="999" step="1" placeholder="Match 1 runs" aria-label="Runs in match 1" class="recent-run"/>
+    <input type="number" min="0" max="999" step="1" placeholder="Match 2 runs" aria-label="Runs in match 2" class="recent-run"/>
+    <input type="number" min="0" max="999" step="1" placeholder="Match 3 runs" aria-label="Runs in match 3" class="recent-run"/>
+    <input type="number" min="0" max="999" step="1" placeholder="Match 4 runs" aria-label="Runs in match 4" class="recent-run"/>
+    <input type="number" min="0" max="999" step="1" placeholder="Match 5 runs" aria-label="Runs in match 5" class="recent-run"/>
+    <button id="analyzeRecentBtn">Analyze my form</button>
+    <button class="secondary" id="clearRecentBtn" type="button">Clear</button>
+  </div>
+  <div class="stats" style="margin:12px 0">
+    <div class="stat"><div class="label">Matches entered</div><div class="value" id="recentCount">0</div><div class="sub">Your entries</div></div>
+    <div class="stat"><div class="label">Average runs</div><div class="value" id="recentAverage">—</div><div class="sub">Across entered matches</div></div>
+    <div class="stat"><div class="label">Highest score</div><div class="value" id="recentHighest">—</div><div class="sub">Your best entered score</div></div>
+    <div class="stat"><div class="label">Total runs</div><div class="value" id="recentTotal">—</div><div class="sub">Across entered matches</div></div>
+  </div>
+  <svg class="chart" id="recentRunsChart" viewBox="0 0 500 205" role="img" aria-label="Line chart of user-entered runs over recent matches"></svg>
+  <div class="insight" id="recentSummary" aria-live="polite">Enter at least one match score and select “Analyze my form” to see your summary.</div>
+</section>
+
 <section class="grid">
   <article class="panel" id="compare">
     <div class="panel-head"><div><h3>Player comparison</h3><div class="desc">Compare two sample profiles side by side</div></div><span class="tag">01 / Compare</span></div>
@@ -88,6 +114,63 @@ function generateInsight(){const p=players.find(x=>x.id==$("insightPlayer").valu
 $("insightBtn").addEventListener("click",generateInsight);
 $("exportBtn").addEventListener("click",()=>{const header=["name","team","role","format","runs","average","strike_rate","wickets","economy"];const csv=[header.join(","),...players.map(p=>header.map(k=>JSON.stringify(k==="strike_rate"?p.sr:p[k]??"")).join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="cricketiq-demo-data.csv";a.click();URL.revokeObjectURL(a.href)});
 let accent=0;$("themeBtn").addEventListener("click",()=>{accent++;document.documentElement.style.setProperty("--lime",accent%2?"#ffb86b":"#c7f36b");document.documentElement.style.setProperty("--cyan",accent%2?"#9b9cff":"#66e0d1")});
+
+// Recent-match tracker: calculations use only values entered by the visitor.
+function analyzeRecent(){
+  const fields=[...document.querySelectorAll(".recent-run")];
+  const raw=fields.map(el=>el.value.trim());
+  const invalid=fields.some(el=>el.value.trim()!=="" && (!Number.isInteger(Number(el.value)) || Number(el.value)<0 || Number(el.value)>999));
+  if(invalid){
+    $("recentSummary").textContent="Please enter whole-number scores from 0 to 999. Empty match fields are allowed.";
+    return;
+  }
+  const scores=raw.map(v=>v===""?null:Number(v)).filter(v=>v!==null);
+  if(scores.length===0){
+    $("recentCount").textContent="0";$("recentAverage").textContent="—";$("recentHighest").textContent="—";$("recentTotal").textContent="—";
+    $("recentRunsChart").innerHTML='<text x="250" y="105" fill="#9ba8c7" font-size="13" text-anchor="middle">Enter scores to display your chart</text>';
+    $("recentSummary").textContent="No scores entered yet. Add at least one score to analyze your form.";
+    return;
+  }
+  const total=scores.reduce((a,b)=>a+b,0), avg=total/scores.length, high=Math.max(...scores);
+  $("recentCount").textContent=String(scores.length);
+  $("recentAverage").textContent=avg.toFixed(1);
+  $("recentHighest").textContent=String(high);
+  $("recentTotal").textContent=String(total);
+
+  const svg=$("recentRunsChart"), W=500,H=205,left=42,right=18,top=16,bottom=32,plotW=W-left-right,plotH=H-top-bottom;
+  const maxVal=Math.max(10,Math.ceil(high/10)*10), minVal=0;
+  let markup="";
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=top+plotH*(1-t),v=Math.round(minVal+(maxVal-minVal)*t);
+    markup+=`<line x1="${left}" y1="${y}" x2="${W-right}" y2="${y}" stroke="#263451" stroke-dasharray="3 4"/><text x="${left-9}" y="${y+4}" fill="#9ba8c7" font-size="10" text-anchor="end">${v}</text>`;
+  });
+  const pts=scores.map((v,i)=>{
+    const x=scores.length===1?left+plotW/2:left+i*(plotW/(scores.length-1));
+    const y=top+plotH-(v/maxVal)*plotH;
+    return {x,y,v,i};
+  });
+  if(pts.length>1) markup+=`<polyline points="${pts.map(p=>`${p.x},${p.y}`).join(" ")}" fill="none" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  pts.forEach(p=>{
+    markup+=`<circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--lime)"><title>Match ${p.i+1}: ${p.v} runs</title></circle><text x="${p.x}" y="${Math.max(11,p.y-11)}" fill="#f3f6ff" font-size="10" text-anchor="middle">${p.v}</text><text x="${p.x}" y="${H-10}" fill="#aab7d4" font-size="10" text-anchor="middle">M${p.i+1}</text>`;
+  });
+  svg.innerHTML=markup;
+
+  let summary=`You entered ${scores.length} match ${scores.length===1?"score":"scores"}. Your average is ${avg.toFixed(1)} runs and your highest score is ${high}. `;
+  if(scores.length>=2){
+    const first=scores[0],last=scores[scores.length-1];
+    if(last>first) summary+=`Your latest entered score is ${last-first} runs higher than your first entered score.`;
+    else if(last<first) summary+=`Your latest entered score is ${first-last} runs lower than your first entered score.`;
+    else summary+="Your latest and first entered scores are equal.";
+  }else summary+="Enter more match scores to compare your recent results.";
+  $("recentSummary").textContent=summary+" This is a simple description of your entries, not a prediction.";
+}
+$("analyzeRecentBtn").addEventListener("click",analyzeRecent);
+$("clearRecentBtn").addEventListener("click",()=>{
+  document.querySelectorAll(".recent-run").forEach(el=>el.value="");
+  analyzeRecent();
+});
+$("recentRunsChart").innerHTML='<text x="250" y="105" fill="#9ba8c7" font-size="13" text-anchor="middle">Enter scores to display your chart</text>';
+
 $("totalPlayers").textContent=players.length;$("totalInnings").textContent="126";$("highestRuns").textContent=fmt(Math.max(...players.map(p=>p.runs)));
 updateCompare();drawChart("runsChart","runs","var(--lime)");drawChart("bowlChart","wickets","var(--cyan)");renderTable();generateInsight();
 </script>
